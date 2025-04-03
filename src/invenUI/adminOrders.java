@@ -8,13 +8,10 @@ import java.awt.*;
 import java.sql.*;
 
 public class adminOrders {
-    private JFrame frame;
-    private JTable table;
-    private DefaultTableModel model;
-    private Connection connection;
+    private final DefaultTableModel model;
 
     public adminOrders() {
-        frame = new JFrame("Orders Placed");
+        JFrame frame = new JFrame("Orders Placed");
         frame.setSize(900, 500);
         frame.setLayout(new BorderLayout());
         frame.setLocationRelativeTo(null);
@@ -26,7 +23,7 @@ public class adminOrders {
         model.addColumn("Total Price");
         model.addColumn("Status");
 
-        table = new JTable(model);
+        JTable table = new JTable(model);
         loadOrders();
 
         frame.add(new JScrollPane(table), BorderLayout.CENTER);
@@ -37,12 +34,13 @@ public class adminOrders {
         model.setRowCount(0);
 
         try {
-            connection = DBConnection.getConnection();
+            Connection connection = DBConnection.getConnection();
             String query = "SELECT o.order_id, u.username, COUNT(o.product_id) AS total_items, " +
                     "o.total_price, o.status " +
                     "FROM Orders o " +
                     "JOIN Users u ON o.user_id = u.user_id " +
                     "GROUP BY o.order_id, u.username, o.total_price, o.status";
+            assert connection != null;
             PreparedStatement pst = connection.prepareStatement(query);
             ResultSet rs = pst.executeQuery();
 

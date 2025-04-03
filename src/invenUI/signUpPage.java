@@ -1,17 +1,14 @@
 package invenUI;
 
 import db.DBConnection;
+
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 public class signUpPage {
-//    private static final String DB_URL = "jdbc:mysql://localhost:3306/invenmgmt";
-//    private static final String DB_USER = "root";
-//    private static final String DB_PASSWORD = "Athithya@2004$$";
-
     signUpPage() {
         JFrame frame = new JFrame("Sign Up");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -61,32 +58,29 @@ public class signUpPage {
         frame.add(registerButton);
         frame.add(messageLabel);
 
-        registerButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String username = userText.getText();
-                String email = emailText.getText();
-                String userAddress = addressText.getText();
-                String password = new String(passText.getPassword());
+        registerButton.addActionListener(_ -> {
+            String username = userText.getText();
+            String email = emailText.getText();
+            String userAddress = addressText.getText();
+            String password = new String(passText.getPassword());
 
-                if (username.isEmpty() || email.isEmpty() || userAddress.isEmpty() || password.isEmpty()) {
-                    messageLabel.setText("All fields are required!");
-                    return;
-                }
+            if (username.isEmpty() || email.isEmpty() || userAddress.isEmpty() || password.isEmpty()) {
+                messageLabel.setText("All fields are required!");
+                return;
+            }
 
-                if (!email.contains("@")) {
-                    messageLabel.setText("Invalid email format!");
-                    return;
-                }
+            if (!email.contains("@")) {
+                messageLabel.setText("Invalid email format!");
+                return;
+            }
 
-                boolean success = registerUser(username, email, userAddress, password);
-                if (success) {
-                    JOptionPane.showMessageDialog(frame, "User Registered Successfully!");
-                    frame.dispose();
-                    SwingUtilities.invokeLater(() -> new landingPage());
-                } else {
-                    messageLabel.setText("Registration failed. Try again!");
-                }
+            boolean success = registerUser(username, email, userAddress, password);
+            if (success) {
+                JOptionPane.showMessageDialog(frame, "User Registered Successfully!");
+                frame.dispose();
+                SwingUtilities.invokeLater(landingPage::new);
+            } else {
+                messageLabel.setText("Registration failed. Try again!");
             }
         });
 
@@ -96,17 +90,19 @@ public class signUpPage {
     private boolean registerUser(String username, String email, String userAddress, String password) {
         String insertQuery = "INSERT INTO Users (username, email, userAddress, password) VALUES (?, ?, ?, ?)";
 
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(insertQuery)) {
+        try (Connection conn = DBConnection.getConnection()) {
+            assert conn != null;
+            try (PreparedStatement pstmt = conn.prepareStatement(insertQuery)) {
 
-            pstmt.setString(1, username);
-            pstmt.setString(2, email);
-            pstmt.setString(3, userAddress);
-            pstmt.setString(4, password);
-            int rowsInserted = pstmt.executeUpdate();
+                pstmt.setString(1, username);
+                pstmt.setString(2, email);
+                pstmt.setString(3, userAddress);
+                pstmt.setString(4, password);
+                int rowsInserted = pstmt.executeUpdate();
 
-            return rowsInserted > 0;
+                return rowsInserted > 0;
 
+            }
         } catch (SQLException ex) {
             ex.printStackTrace();
             return false;

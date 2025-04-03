@@ -6,10 +6,11 @@ import java.awt.*;
 import java.sql.*;
 
 public class landingPage {
-    private JFrame frame;
-    private JTextField userText, emailText;
-    private JPasswordField passText;
-    private JLabel messageLabel;
+    private final JFrame frame;
+    private final JTextField userText;
+    private final JTextField emailText;
+    private final JPasswordField passText;
+    private final JLabel messageLabel;
 
     public landingPage() {
         frame = new JFrame("Login");
@@ -59,9 +60,9 @@ public class landingPage {
         frame.add(signUpButton);
         frame.add(messageLabel);
 
-        loginButton.addActionListener(e -> authenticateUser());
+        loginButton.addActionListener(_ -> authenticateUser());
 
-        signUpButton.addActionListener(e -> {
+        signUpButton.addActionListener(_ -> {
             frame.dispose();
             new signUpPage();
         });
@@ -77,6 +78,7 @@ public class landingPage {
         try {
             Connection conn = DBConnection.getConnection();
             String query = "SELECT user_id, role FROM Users WHERE (username = ? OR email = ?) AND password = ?";
+            assert conn != null;
             PreparedStatement stmt = conn.prepareStatement(query);
             stmt.setString(1, username);
             stmt.setString(2, email);

@@ -11,10 +11,9 @@ import java.util.Vector;
 
 public class viewOrders {
 
-    private JFrame frame;
-    private JTable table;
-    private int userId;
-    private DefaultTableModel model;
+    private final JFrame frame;
+    private final int userId;
+    private final DefaultTableModel model;
 
     public viewOrders(int userId) {
         this.userId = userId;
@@ -32,7 +31,7 @@ public class viewOrders {
         model.addColumn("Status");
         model.addColumn("Action");  // Column for buttons
 
-        table = new JTable(model);
+        JTable table = new JTable(model);
         table.getColumn("Action").setCellRenderer(new ButtonRenderer());
         table.getColumn("Action").setCellEditor(new ButtonEditor(new JCheckBox()));
 
@@ -53,6 +52,7 @@ public class viewOrders {
                     "WHERE o.user_id = ? " +
                     "ORDER BY o.order_date DESC";
 
+            assert con != null;
             PreparedStatement pst = con.prepareStatement(query);
             pst.setInt(1, userId);  // ✅ Correct usage of parameter
             ResultSet rs = pst.executeQuery();
@@ -79,7 +79,7 @@ public class viewOrders {
     }
 
     private void markOrderAsReceived(int orderId) {
-        try (Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/invenmgmt", "root", "Athithya@2004$$")) {
+        try (Connection con = DBConnection.getConnection()) {
             String query = "UPDATE Orders SET status = 'Received' WHERE order_id = ?";
             PreparedStatement pst = con.prepareStatement(query);
             pst.setInt(1, orderId);
@@ -92,7 +92,7 @@ public class viewOrders {
         }
     }
 
-    class ButtonRenderer extends JButton implements TableCellRenderer {
+    static class ButtonRenderer extends JButton implements TableCellRenderer {
         public ButtonRenderer() {
             setOpaque(true);
         }
@@ -109,7 +109,7 @@ public class viewOrders {
     }
 
     class ButtonEditor extends DefaultCellEditor {
-        private JButton button;
+        private final JButton button;
         private int selectedOrderId;
         private boolean isClicked;
 

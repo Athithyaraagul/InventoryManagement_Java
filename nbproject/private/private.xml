@@ -5,7 +5,9 @@
         <group>
             <file>file:/Users/Athithyaraagul/Code/java/InventoryManagement/src/invenUI/userUI.java</file>
             <file>file:/Users/Athithyaraagul/Code/java/InventoryManagement/src/invenUI/viewOrders.java</file>
+            <file>file:/Users/Athithyaraagul/Code/java/InventoryManagement/src/db/DBConnection.java</file>
             <file>file:/Users/Athithyaraagul/Code/java/InventoryManagement/src/invenUI/adminUI.java</file>
+            <file>file:/Users/Athithyaraagul/Code/java/InventoryManagement/src/db/dbconfig.properties</file>
             <file>file:/Users/Athithyaraagul/Code/java/InventoryManagement/src/invenUI/landingPage.java</file>
             <file>file:/Users/Athithyaraagul/Code/java/InventoryManagement/src/invenUI/adminOrders.java</file>
             <file>file:/Users/Athithyaraagul/Code/java/InventoryManagement/src/invenUI/signUpPage.java</file>
